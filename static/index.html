@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Documentos PDF</title>
+    <meta name="description" content="Sistema de gerenciamento de documentos PDF com armazenamento seguro no S3">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>📄 PDF Manager</h2>
+                </div>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#documents" class="nav-link">Documentos</a></li>
+                    <li><a href="#upload" class="nav-link">Upload</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Upload Section -->
+        <section id="upload" class="upload-section">
+            <div class="container">
+                <div class="upload-card">
+                    <div class="upload-header">
+                        <h2>Upload de Documentos PDF</h2>
+                        <p>Selecione um arquivo PDF para enviar ao S3</p>
+                    </div>
+                    
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-placeholder">
+                            <div class="upload-icon">📁</div>
+                            <p>Clique para selecionar um PDF ou arraste aqui</p>
+                            <p class="upload-formats">Suporte: PDF (máx. 50MB)</p>
+                        </div>
+                        <input type="file" id="file-input" accept=".pdf,application/pdf" style="display: none;">
+                    </div>
+
+                    <div class="selected-file" id="selected-file" style="display: none;">
+                        <div class="file-info">
+                            <span class="file-icon">📄</span>
+                            <div class="file-details">
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                            </div>
+                            <button class="remove-file" id="remove-file">×</button>
+                        </div>
+                        <div class="upload-progress" id="upload-progress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <span class="progress-text" id="progress-text">0%</span>
+                        </div>
+                    </div>
+
+                    <button id="upload-btn" class="btn btn-primary full-width" disabled>
+                        <span class="btn-text">Enviar Documento</span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span>
+                            Enviando...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documents Gallery Section -->
+        <section id="documents" class="documents-section">
+            <div class="container">
+                <div class="documents-header">
+                    <h2>Documentos</h2>
+                    <div class="documents-controls">
+                        <button id="refresh-documents" class="btn btn-secondary">
+                            <span class="refresh-icon">🔄</span>
+                            Atualizar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="documents-loading" id="documents-loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando documentos...</p>
+                </div>
+
+                <div class="documents-empty" id="documents-empty" style="display: none;">
+                    <div class="empty-icon">📄</div>
+                    <h3>Nenhum documento encontrado</h3>
+                    <p>Faça upload de um PDF para começar</p>
+                </div>
+
+                <div class="documents-grid" id="documents-grid">
+                    <!-- Documents will be loaded here dynamically -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Document Modal -->
+    <div class="modal" id="document-modal" style="display: none;">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalhes do Documento</h3>
+                <button class="modal-close" id="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Nome:</label>
+                            <span id="modal-filename"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Tipo:</label>
+                            <span id="modal-type">PDF</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Tamanho:</label>
+                            <span id="modal-size"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Enviado em:</label>
+                            <span id="modal-date"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>ID do Documento:</label>
+                            <span id="modal-doc-id" class="doc-id"></span>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="download-document" class="btn btn-primary">
+                            <span>📥 Download</span>
+                        </button>
+                        <button id="delete-document" class="btn btn-danger">
+                            <span>🗑️ Deletar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
